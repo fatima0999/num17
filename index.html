@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Metadatos de la página: charset, título y enlaces a hojas de estilo -->
+        <meta charset="utf-8" />
+        <title>Juego Adivina el Número</title>
+        <link rel="stylesheet" href="style2.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    </head>
+    <body>
+        <!-- Contenedor de la página con tres columnas -->
+        <div class="container">
+            <div class="row">
+                <!-- Columna vacía a la izquierda -->
+                <div class="col-sm-4"></div>
+                        <!-- Columna central con el título y el formulario -->
+                        <div class="col-sm-4" style="background-position: center center;">
+                            <!-- Espacio en blanco -->
+                            <BR>
+                            <BR>
+                            <!-- Título del juego -->
+                            <h1 style="text-align: center ;"> Adivina el Número</h1>
+                            <!-- Imagen del juego -->
+                            <img src="IMAGENES/fb2cbe0595615d8e873a485df8cad81e.png" alt=""  style="margin-top: 10px; background-position: center center;" width="400px" >
+                        </div>
+                        <!-- Columna vacía a la derecha -->
+                        <div class="col-sm-4">
+                            <!-- Formulario para adivinar el número -->
+                            <div class="form">
+                                <!-- Espacio en blanco -->
+                                <BR>
+                                <P>ENCUENTRA EL NUMERO DEL 1 AL 10 </P> 
+                                <BR>
+                                <!-- Campo de texto para introducir la respuesta -->
+                                <label for="guessField" style="text-align: center;">ADIVINA EL NUMERO: </label>
+                                <BR>
+                                <BR>
+                                <input type="text" id="guessField" class="guessField" />
+                                <BR>
+                                <BR>
+                                <!-- Botón para enviar la respuesta -->
+                                <input type="submit" value="Enviar respuesta" class="guessSubmit" />
+                                </div>
+                                <!-- Área para mostrar los resultados -->
+                                <div class="resultParas">
+                                <p class="guesses"></p>
+                                <p class="lastResult"></p>
+                                <p class="lowOrHi"></p>
+                                </div>
+                    </div>
+            </div>
+        </div>
+    </body>
+</html>
+                </div>
+            </div>   
+            </div>
+        </div>
+        </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script>
+    </body>
+</html>
+<script>
+    // Generar un número aleatorio entre 1 y 6
+    let randomNumber = Math.floor(Math.random() * 6) + 1;
+    
+    // Seleccionar elementos HTML
+    const guesses = document.querySelector(".guesses");
+    const lastResult = document.querySelector(".lastResult");
+    const lowOrHi = document.querySelector(".lowOrHi");
+    const guessSubmit = document.querySelector(".guessSubmit");
+    const guessField = document.querySelector(".guessField");
+    
+    // Inicializar conteo de intentos
+    let guessCount = 1;
+    
+    // Función para verificar intento del usuario
+    function checkGuess() {
+        // Obtener intento del usuario como número
+        let userGuess = Number(guessField.value);
+        
+        // Agregar intento del usuario a la lista de intentos anteriores
+        if (guessCount === 1) {
+            guesses.textContent = "Intentos anteriores: ";
+        }
+        guesses.textContent += userGuess + " ";
+        
+        // Verificar si el intento del usuario es correcto
+        if (userGuess === randomNumber) {
+            lastResult.textContent = "¡Felicidades! ¡Lo adivinaste!";
+            lastResult.style.backgroundColor = "green";
+            lowOrHi.textContent = "";
+            setGameOver();
+        }
+        // Verificar si el usuario ha hecho 5 intentos incorrectos
+        else if (guessCount === 5) {
+            lastResult.textContent = "!!!Fin del juego!!!";
+            lowOrHi.textContent = "";
+            setGameOver();
+        }
+        // Verificar si el intento del usuario es demasiado alto o demasiado bajo
+        else {
+            lastResult.textContent = "¡Incorrecto!";
+            lastResult.style.backgroundColor = "red";
+            if (userGuess < randomNumber) {
+            lowOrHi.textContent = "¡El número es muy bajo!";
+            } else if (userGuess > randomNumber) {
+            lowOrHi.textContent = "¡El número es muy alto!";
+            }
+        }
+        
+        // Incrementar conteo de intentos y limpiar campo de intento
+        guessCount++;
+        guessField.value = "";
+        guessField.focus();
+        }
+        
+        // Agregar evento de clic al botón de envío
+        guessSubmit.addEventListener("click", checkGuess);
+        
+        // Función para establecer fin del juego y mostrar botón de reinicio
+        function setGameOver() {
+        guessField.disabled = true;
+        guessSubmit.disabled = true;
+        resetButton = document.createElement("button");
+        resetButton.textContent = "Jugar de nuevo";
+        document.body.appendChild(resetButton);
+        resetButton.addEventListener("click", resetGame);
+        }
+        
+        // Función para reiniciar juego
+        function resetGame() {
+        guessCount = 1;
+        guesses.textContent = "";
+        lastResult.textContent = "";
+        lowOrHi.textContent = "";
+        guessField.disabled = false;
+        guessSubmit.disabled = false;
+        resetButton.parentNode.removeChild(resetButton);
+        // Generar un nuevo número aleatorio
+        randomNumber = Math.floor(Math.random() * 6) + 1;
+        }
+    </script>
